@@ -90,12 +90,19 @@ const addBlurHash = async (data: ReturnType<typeof extractData>) => {
   return Promise.allSettled(newData)
 }
 
+// Narrowing down the type of a Promise which had Promise.allSettled called on doesn't work #47617
+// https://github.com/microsoft/TypeScript/issues/47617
+const isFulfilled = <T>(
+  val: PromiseSettledResult<T>
+): val is PromiseFulfilledResult<T> => val.status === "fulfilled"
+
 const processFilenames = async (filenames: string[]) => {
   const extractedData = extractData(filenames)
   const results = await addBlurHash(extractedData)
-  const data = results
-    .filter(item => item.status === "fulfilled")
-    .map(item => item.value)
+  const data = results.filter(isFulfilled).map(item => {
+    console.log(item)
+    return item.value
+  })
   const jsonData = JSON.stringify(data, null, 4)
   console.log(
     "Errors",
