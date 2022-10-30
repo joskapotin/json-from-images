@@ -46,8 +46,14 @@ const extractDataFromImages = (filenames: string[]) =>
       const { height, width } = extractDimensions(filename)
       const slug = slugify(title)
 
-      const { imageWidth, imageHeight, thumbnailWidth, thumbnailHeight } =
-        await createImages(filename)
+      const {
+        imageWidth,
+        imageHeight,
+        thumbnailWidth,
+        thumbnailHeight,
+        imageBlurhash,
+        squareBlurhash,
+      } = await createImages(filename)
 
       return {
         id: uuidv4(),
@@ -63,6 +69,8 @@ const extractDataFromImages = (filenames: string[]) =>
         imageHeight,
         thumbnailWidth,
         thumbnailHeight,
+        imageBlurhash,
+        squareBlurhash,
       }
     })
   )
